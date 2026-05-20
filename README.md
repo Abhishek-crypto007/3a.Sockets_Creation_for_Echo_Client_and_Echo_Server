@@ -11,47 +11,77 @@ Sockets Links.
 ## PROGRAM
 ### Server
 ```python3
-import socket
+import socket 
+ 
+# Create socket object 
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+ 
+# Bind the socket with host and port 
+host = '127.0.0.1' 
+port = 5000 
+server_socket.bind((host, port)) 
+ 
+# Listen for incoming connectons 
+server_socket.listen(1) 
+ 
+print("Echo Server is waitng for connecton...") 
+ 
+# Accept client connecton 
+client_socket, addr = server_socket.accept() 
+print("Connected to:", addr) 
+ 
+while True: 
+    # Receive message from client 
+    data = client_socket.recv(1024).decode() 
+ 
+    if not data: 
+        break 
+ 
+    print("Client:", data) 
+ 
+    # Send same message back to client 
+    client_socket.send(data.encode()) 
+ 
+# Close sockets 
+client_socket.close() 
+server_socket.close(
 
-HOST = '127.0.0.1'  
-PORT = 65432        
-
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
-    server_socket.bind((HOST, PORT))
-    server_socket.listen()
-
-    print(f"Server is listening on {HOST}:{PORT}")
-    while True:
-        conn, addr = server_socket.accept()
-        with conn:
-            print(f"Connected by {addr}")
-            while True:
-                data = conn.recv(1024)
-                if not data:
-                    break
-                conn.sendall(data)
-                print(f"Echoed: {data.decode('utf-8')}")
 ```
 ### Client
 ```python3
 
-import socket
-
-HOST = '127.0.0.1'  
-PORT = 65432  
-
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
-    client_socket.connect((HOST, PORT))
-
-    message = 'Hello, Server!'
-    client_socket.sendall(message.encode('utf-8'))
-
-    data = client_socket.recv(1024)
-    print(f"Received echo: {data.decode('utf-8')}")
+import socket 
+ 
+# Create socket object 
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+ 
+# Connect to server 
+host = '127.0.0.1' 
+port = 5000 
+ 
+client_socket.connect((host, port)) 
+ 
+while True: 
+    # Input message 
+    message = input("Enter message: ") 
+ 
+    # Send message to server 
+    client_socket.send(message.encode()) 
+ 
+    if message.lower() == 'exit': 
+        break 
+ 
+    # Receive echoed message 
+    data = client_socket.recv(1024).decode() 
+ 
+    print("Server echoed:", data) 
+ 
+# Close socket 
+client_socket.close() 
 
 ```
 ## OUPUT
-<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/de0bf68a-38dc-44c3-8361-c2df7260c12c" />
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/0ef94181-bdc0-4894-8886-71a6be761b24" />
 
 ## RESULT
 Thus, the python program for creating Echo Client and Echo Server using TCP Sockets Links 
